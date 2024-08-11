@@ -74,7 +74,7 @@ def nativeMode():
         print("[FAILED]")
         failed_list.append("Top-100-stars")
         ps = []
-    TopStars = pandas.DataFrame(ps)
+    pandas.DataFrame(ps).to_csv(f"{RES_DIR}\\csv\\top-stars.csv", index=False)
     with open(f"{RES_DIR}\\json\\top-stars.json", 'w', encoding='utf-8') as f:
         json.dump(TopStars, f, ensure_ascii=False)
         f.close()
@@ -90,7 +90,7 @@ def nativeMode():
         print("[FAILED]")
         failed_list.append("Top-100-forks")
         ps = []
-    TopForks = pandas.DataFrame(ps)
+    pandas.DataFrame(ps).to_csv(f"{RES_DIR}\\csv\\top-forks.csv", index=False)
     with open(f"{RES_DIR}\\json\\top-forks.json", 'w', encoding='utf-8') as f:
         json.dump(TopForks, f, ensure_ascii=False)
         f.close()
@@ -149,7 +149,30 @@ def dictMode():
             json.dump(v, fp)
             fp.close()
 
+def retry_func():
+    for n in range(retry_count):
+        for i in failed_list:
+            print(f"Retrying... {n+1}/{retry_count}")
+            start_time = time.perf_counter()
+            print(f"Retrying Language: {i}".ljust(60), end="")
+            baseUrl = f"https://github.com/EvanLi/Github-Ranking/raw/master/Top100/{i}.md"
+            try:
+                ps = getData(baseUrl)
+            except Exception:
+                print("[FAILED]")
+                continue
+            failed_list.remove(i)
+            pandas.DataFrame(ps).to_csv(f'{RES_DIR}\\csv\\{i.lower}.csv', index=False)
+            with open(f"{RES_DIR}\\json\\{i.lower()}.json", 'w', encoding='utf-8') as f:
+                json.dump(ps, f, ensure_ascii=False)
+                f.close()
+            end_time = time.perf_counter()
+            print(f"[OK] {end_time - start_time:.4f} seconds")
+        if len(failed_list) == 0: break
+
+
 if __name__ == "__main__":
     if (useRawMode): nativeMode()
     else: dictMode()
     print(f"failed: {' '.join(failed_list)}")
+    retry_func()
