@@ -58,7 +58,7 @@ def nativeMode():
             continue
         pandas.DataFrame(ps).to_csv(f'{RES_DIR}\\csv\\{i.lower()}.csv', index=False)
         with open(f"{RES_DIR}\\json\\{i.lower()}.json", 'w', encoding='utf-8') as f:
-            json.dump(ps, f, ensure_ascii=False)
+            json.dump(ps, f, ensure_ascii=False, indent=4)
             f.close()
         end_time = time.perf_counter()
         print(f"[OK] {end_time - start_time:.4f} seconds")
@@ -75,7 +75,7 @@ def nativeMode():
         ps = []
     pandas.DataFrame(ps).to_csv(f"{RES_DIR}\\csv\\top-stars.csv", index=False)
     with open(f"{RES_DIR}\\json\\top-stars.json", 'w', encoding='utf-8') as f:
-        json.dump(ps, f, ensure_ascii=False)
+        json.dump(ps, f, ensure_ascii=False, indent=4)
         f.close()
     end_time = time.perf_counter()
     if ps != []: print(f"[OK] {end_time - start_time:.4f} seconds")
@@ -91,7 +91,7 @@ def nativeMode():
         ps = []
     pandas.DataFrame(ps).to_csv(f"{RES_DIR}\\csv\\top-forks.csv", index=False)
     with open(f"{RES_DIR}\\json\\top-forks.json", 'w', encoding='utf-8') as f:
-        json.dump(ps, f, ensure_ascii=False)
+        json.dump(ps, f, ensure_ascii=False, indent=4)
         f.close()
     end_time = time.perf_counter()
     if ps != []: print(f"[OK] {end_time - start_time:.4f} seconds")
@@ -111,7 +111,7 @@ def retry_func():
             failed_list.remove(i)
             pandas.DataFrame(ps).to_csv(f'{RES_DIR}\\csv\\{i.lower()}.csv', index=False)
             with open(f"{RES_DIR}\\json\\{i.lower()}.json", 'w', encoding='utf-8') as f:
-                json.dump(ps, f, ensure_ascii=False)
+                json.dump(ps, f, ensure_ascii=False, indent=4)
                 f.close()
             end_time = time.perf_counter()
             print(f"[OK] {end_time - start_time:.4f} seconds")

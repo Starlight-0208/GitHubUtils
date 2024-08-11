@@ -1,0 +1,29 @@
+name: Auto update
+on:
+    schedule:
+        - cron: '0 12 * * *'
+
+jobs:
+    update-repo:
+        runs-on: ubuntu-latest
+        
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v3
+            - name: Run the script to fetch data
+              run: |
+                chmod +x ./run.sh
+                ./run.sh
+            - name: set up Git user
+              run: |
+                git config user.name "github-actions[bot]"
+                git config user.email "github-actions[bot]@users.noreply.github.com"
+            - name: Commit changes
+              run: |
+                DATE=$(date +'%Y-%m-%d')
+                git commit 0, "$DATE updated"
+            - name: Push changes
+              run: |
+                git push
+              env:
+                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
