@@ -21,6 +21,8 @@ langs = ["ActionScript", "C", "CPP", "CSS", "CSharp",
          "Perl", "PowerShell", "Python", "R", "Ruby", "Rust", 
          "Scala", "Shell", "Swift", "TeX", "TypeScript", "Vim-script"]
 
+failed_list = []
+
 def process_func(raw_text: str):
     res = []
     for i in raw_text.split("\n\n")[2].split("\n")[2:]:
@@ -53,6 +55,7 @@ def nativeMode():
             ps = getData(baseUrl)
         except Exception:
             print("[FAILED]")
+            failed_list.append(i)
             continue
         pandas.DataFrame(ps).to_csv(f'{RES_DIR}\\csv\\{i.lower}.csv', index=False)
         with open(f"{RES_DIR}\\json\\{i.lower()}.json", 'w', encoding='utf-8') as f:
@@ -69,6 +72,7 @@ def nativeMode():
         ps = getData(baseUrl)
     except Exception as e:
         print("[FAILED]")
+        failed_list.append("Top-100-stars")
         ps = []
     TopStars = pandas.DataFrame(ps)
     with open(f"{RES_DIR}\\json\\top-stars.json", 'w', encoding='utf-8') as f:
@@ -84,6 +88,7 @@ def nativeMode():
         ps = getData(baseUrl)
     except Exception as e:
         print("[FAILED]")
+        failed_list.append("Top-100-forks")
         ps = []
     TopForks = pandas.DataFrame(ps)
     with open(f"{RES_DIR}\\json\\top-forks.json", 'w', encoding='utf-8') as f:
@@ -102,6 +107,7 @@ def dictMode():
             ps = getData(baseUrl)
         except Exception:
             print("[FAILED]")
+            failed_list.append(i)
             continue
         resultSet[i] = ps
         end_time = time.perf_counter()
@@ -115,6 +121,7 @@ def dictMode():
         ps = getData(baseUrl)
     except Exception as e:
         print("[FAILED]")
+        failed_list.append("Top-100-stars")
         ps = None
     resultSet["TopStars"] = ps
     end_time = time.perf_counter()
@@ -127,6 +134,7 @@ def dictMode():
         ps = getData(baseUrl)
     except Exception as e:
         print("[FAILED]")
+        failed_list.append("Top-100-forks")
         ps = None
     resultSet["TopForks"] = ps
     end_time = time.perf_counter()
@@ -136,11 +144,12 @@ def dictMode():
         if v is None: 
             print("[!] Wrong data.")
             continue
-        pandas.DataFrame(v).to_csv(f"{RES_DIR}\\{i.lower}.json", index=False)
-        with open(f"{RES_DIR}\\{k.lower}.json", "w") as fp: 
+        pandas.DataFrame(v).to_csv(f"{RES_DIR}\\{i.lower()}.csv", index=False)
+        with open(f"{RES_DIR}\\{k.lower()}.json", "w") as fp: 
             json.dump(v, fp)
             fp.close()
 
 if __name__ == "__main__":
     if (useRawMode): nativeMode()
     else: dictMode()
+    print(f"failed: {' '.join(failed_list)}")
