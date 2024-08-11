@@ -6,7 +6,7 @@ import datetime
 import pandas
 import requests
 
-RES_DIR = f'{os.getcwd()}\\data'
+RES_DIR = f'{os.path.abspath(__file__)}\\..\\..\\data'
 rate_limit = False
 interval = 1
 retry: bool = False
