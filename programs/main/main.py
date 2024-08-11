@@ -7,7 +7,6 @@ import pandas
 import requests
 
 RES_DIR = f'{os.getcwd()}\\data'
-useRawMode = False
 rate_limit = False
 interval = 1
 retry: bool = False
@@ -97,58 +96,6 @@ def nativeMode():
     end_time = time.perf_counter()
     if ps != []: print(f"[OK] {end_time - start_time:.4f} seconds")
 
-def dictMode(): 
-    resultSet = {}
-    for i in langs:
-        start_time = time.perf_counter()
-        print(f"Processing Language: {i}".ljust(60), end="")
-        baseUrl = f"https://github.com/EvanLi/Github-Ranking/raw/master/Top100/{i}.md"
-        try:
-            ps = getData(baseUrl)
-        except Exception:
-            print("[FAILED]")
-            failed_list.append(i)
-            continue
-        resultSet[i] = ps
-        end_time = time.perf_counter()
-        print(f"[OK] {end_time - start_time:.4f} seconds")
-        if (rate_limit): time.sleep(interval)
-    
-    print(f"Processing Language: Top 100 Stars".ljust(60), end="")
-    start_time = time.perf_counter()
-    baseUrl = f"https://github.com/EvanLi/Github-Ranking/raw/master/Top100/Top-100-stars.md"
-    try:
-        ps = getData(baseUrl)
-    except Exception as e:
-        print("[FAILED]")
-        failed_list.append("Top-100-stars")
-        ps = None
-    resultSet["TopStars"] = ps
-    end_time = time.perf_counter()
-    if ps != []: print(f"[OK] {end_time - start_time:.4f} seconds")
-
-    print(f"Processing Language: Top 100 Forks".ljust(60), end="")
-    start_time = time.perf_counter()
-    baseUrl = f"https://github.com/EvanLi/Github-Ranking/raw/master/Top100/Top-100-forks.md"
-    try:
-        ps = getData(baseUrl)
-    except Exception as e:
-        print("[FAILED]")
-        failed_list.append("Top-100-forks")
-        ps = None
-    resultSet["TopForks"] = ps
-    end_time = time.perf_counter()
-    if ps != []: print(f"[OK] {end_time - start_time:.4f} seconds")
-
-    for k, v in resultSet.items():
-        if v is None: 
-            print("[!] Wrong data.")
-            continue
-        pandas.DataFrame(v).to_csv(f"{RES_DIR}\\{i.lower()}.csv", index=False)
-        with open(f"{RES_DIR}\\{k.lower()}.json", "w") as fp: 
-            json.dump(v, fp)
-            fp.close()
-
 def retry_func():
     for n in range(retry_count):
         for i in failed_list:
@@ -172,7 +119,6 @@ def retry_func():
 
 
 if __name__ == "__main__":
-    if (useRawMode): nativeMode()
-    else: dictMode()
+    nativeMode()
     print(f"failed: {' '.join(failed_list)}")
     retry_func()
