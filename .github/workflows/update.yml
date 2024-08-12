@@ -1,7 +1,7 @@
 name: Auto update
 on:
     schedule:
-        - cron: '0 15 * * *'
+        - cron: '0 2 * * *'
 
 jobs:
     update-repo:
@@ -20,6 +20,9 @@ jobs:
               run: |
                 git config user.name "github-actions[bot]"
                 git config user.email "github-actions[bot]@users.noreply.github.com"
+            - name: add filt to git
+              run: |
+                git add .
             - name: Commit changes
               run: |
                 DATE=$(date +'%Y-%m-%d')
