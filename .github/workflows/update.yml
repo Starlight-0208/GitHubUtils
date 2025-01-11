@@ -1,7 +1,5 @@
 name: Auto update
-on:
-    schedule:
-        - cron: '0 2 * * *'
+on: push
 
 jobs:
     update-repo:
