@@ -16,11 +16,14 @@ jobs:
                 python programs/main/main.py
             - name: set up Git user
               run: |
-                git config user.name "github-actions[bot]"
-                git config user.email "github-actions[bot]@users.noreply.github.com"
+                git config user.name "starlight_0208"
+                git config user.email "Starlight-0208@users.noreply.github.com"
             - name: add files to git
               run: |
                 git add .
+            - name: set remote url
+              run: |
+                git remote set-url origin https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
             - name: Commit changes
               run: |
                 DATE=$(sh -c 'date +"%Y-%m-%d"')
@@ -28,5 +31,3 @@ jobs:
             - name: Push changes
               run: |
                 git push
-              env:
-                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
